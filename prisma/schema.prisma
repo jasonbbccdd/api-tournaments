@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  passwordHash String
+  profile      Profile?
+  predictions  Prediction[]
+}
+
+model Profile {
+  id        Int     @id @default(autoincrement())
+  firstName String?
+  lastName  String?
+  username  String?
+  country   String?
+  avatar    String?
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int     @unique
+}
+
+model Prediction {
+  id     Int     @id @default(autoincrement())
+  title  String
+  detail String?
+  user   User?   @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+model Confederation {
+  id    Int     @id @default(autoincrement())
+  code  String  @unique
+  name  String?
+  teams Team[]
+}
+
+model Team {
+  id              Int             @id @default(autoincrement())
+  codeNum         String?
+  code2           String
+  code3           String
+  type            String
+  name            String
+  association     String?
+  confederation   Confederation   @relation(fields: [confederationId], references: [id])
+  confederationId Int
+  teamsOnGroups   TeamsOnGroups[]
+
+  @@unique([code3, type])
+}
+
+model TeamsOnGroups {
+  id      Int    @id @default(autoincrement())
+  order   Int
+  team    Team?  @relation(fields: [teamId], references: [id])
+  teamId  Int?
+  group   Group? @relation(fields: [groupId], references: [id])
+  groupId Int?
+}
+
+model Group {
+  id            Int             @id @default(autoincrement())
+  code          String
+  teamsOnGroups TeamsOnGroups[]
+  tournament    Tournament      @relation(fields: [tournamentId], references: [id])
+  tournamentId  Int
+}
+
+model Tournament {
+  id      Int      @id @default(autoincrement())
+  code    String
+  name    String
+  version DateTime @db.Date
+  host    String?
+  groups  Group[]
+}
