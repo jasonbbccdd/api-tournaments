@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Tournament" ALTER COLUMN "edition" SET DATA TYPE TEXT,
+ALTER COLUMN "year" SET DATA TYPE TEXT;

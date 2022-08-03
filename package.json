@@ -1,5 +1,5 @@
 {
-  "name": "jujutsuTWO",
+  "name": "jujutsu-two",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -8,9 +8,13 @@
     "start": "node main.js",
     "dev": "nodemon main.js"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^7.3.0",
     "@prisma/client": "^3.9.1",
     "aws-sdk": "^2.1074.0",
     "bcrypt": "^5.0.1",

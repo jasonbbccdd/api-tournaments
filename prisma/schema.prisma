@@ -25,7 +25,7 @@ model Profile {
   username  String?
   country   String?
   avatar    String?
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int     @unique
 }
 
@@ -41,7 +41,10 @@ model Confederation {
   id    Int     @id @default(autoincrement())
   code  String  @unique
   name  String?
+  logo  String?
+  map   String?
   teams Team[]
+  tournaments Tournament[]
 }
 
 model Team {
@@ -52,19 +55,20 @@ model Team {
   type            String
   name            String
   association     String?
-  confederation   Confederation   @relation(fields: [confederationId], references: [id])
+  confederation   Confederation   @relation(fields: [confederationId], references: [id], onDelete: Cascade)
   confederationId Int
   teamsOnGroups   TeamsOnGroups[]
 
+  @@unique([code2, type])
   @@unique([code3, type])
 }
 
 model TeamsOnGroups {
   id      Int    @id @default(autoincrement())
   order   Int
-  team    Team?  @relation(fields: [teamId], references: [id])
+  team    Team?  @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId  Int?
-  group   Group? @relation(fields: [groupId], references: [id])
+  group   Group? @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId Int?
 }
 
@@ -72,15 +76,31 @@ model Group {
   id            Int             @id @default(autoincrement())
   code          String
   teamsOnGroups TeamsOnGroups[]
-  tournament    Tournament      @relation(fields: [tournamentId], references: [id])
+  tournament    Tournament      @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId  Int
 }
 
 model Tournament {
-  id      Int      @id @default(autoincrement())
-  code    String
-  name    String
-  version DateTime @db.Date
-  host    String?
-  groups  Group[]
+  id          Int     @id @default(autoincrement())
+  code        String
+  name        String
+  year        String?
+  edition     String?
+  host        String?
+  logo        String?
+  numOfGroups Int?
+  numOfTeams  Int?
+  groups      Group[]
+  confederation  Confederation? @relation(fields: [confederationId], references: [id] )
+  confederationId Int?
+
 }
+
+// model Tournament {
+//   id      Int      @id @default(autoincrement())
+//   code    String
+//   name    String
+//   version DateTime @db.Date
+//   host    String?
+//   groups  Group[]
+// }
